@@ -1,8 +1,9 @@
 {
   "name": "Princess Math Club",
   "short_name": "Princess Math",
-  "start_url": "./",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff7fc",
-  "theme_color": "#8e5bc7"
+  "theme_color": "#8752bd",
+  "description": "A magical maths adventure club with daily challenges, princess collection, and rewards"
 }
