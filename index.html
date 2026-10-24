@@ -1,588 +1,130 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8e5bc7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Princess Math">
+<link rel="manifest" href="manifest.json">
 <title>Princess Math Club</title>
 <style>
-:root{
- --site-primary:#8e5bc7;--site-on-primary:#ffffff;
- --site-secondary:#f7c6df;--site-on-secondary:#54244b;
- --site-background:#fff7fc;--site-on-background:#35213e;
- --site-font-body:ui-rounded,"Trebuchet MS",system-ui,sans-serif;
- --site-font-heading:ui-rounded,"Trebuchet MS",system-ui,sans-serif;
- --site-heading-scale:1;--site-spacing-scale:1;--site-radius-scale:1;--site-decoration-opacity:1;
-}
-*{box-sizing:border-box} html{margin:0} body{margin:0;font-family:var(--site-font-body);background:var(--site-background);color:var(--site-on-background)}
-#app{min-height:100vh;background-color:var(--site-background);color:var(--site-on-background);overflow:hidden}
-header{background:var(--site-primary);color:var(--site-on-primary);padding:calc(16px * var(--site-spacing-scale)) clamp(16px,4vw,42px);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-size:calc(clamp(22px,3vw,34px)*var(--site-heading-scale));font-weight:950;letter-spacing:-.04em}.brand small{display:block;font-size:12px;letter-spacing:.13em;text-transform:uppercase;opacity:.85;margin-top:3px}
-header .crown{font-size:34px}.shell{max-width:1100px;margin:auto;padding:clamp(14px,3vw,30px)}
-.panel{background:light-dark(#ffffff,#211c2b);border:1px solid light-dark(#f0d9ec,#493a50);border-radius:calc(24px * var(--site-radius-scale));padding:clamp(16px,3vw,28px);box-shadow:0 8px 26px #9d66a51a;margin-bottom:16px}
-h2{font-size:calc(21px * var(--site-heading-scale));margin:0 0 16px} h3{margin:0 0 10px}
-.players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.player{border:2px solid light-dark(#f0d9ec,#493a50);border-radius:20px;padding:14px;text-align:center;background:light-dark(#fff9fd,#292232);cursor:pointer;transition:.18s;min-height:100px;color:inherit;font:inherit}
-.player .emoji{font-size:34px;display:block}.player strong{display:block;font-size:20px;margin-top:4px}
-.player.selected{border-color:var(--site-primary);background:light-dark(#f4e8ff,#433052);box-shadow:0 0 0 3px #b994df40}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;color:light-dark(#755b7b,#d5bedb)}
-select,input[type=number]{width:100%;padding:12px;border:1px solid light-dark(#e5cfe4,#55465e);border-radius:12px;background:light-dark(#fff,#191621);color:inherit;font:inherit;font-size:16px}
-.checks{display:flex;flex-wrap:wrap;gap:9px}.check{border:1px solid light-dark(#e8d4e8,#55465e);padding:10px 12px;border-radius:999px;display:flex;gap:8px;align-items:center;font-size:14px;background:light-dark(#fff9fd,#292232)}.check input{accent-color:var(--site-primary)}
-button{font:inherit;cursor:pointer;border:0}.primary{background:var(--site-primary);color:white;font-weight:900;padding:14px 22px;border-radius:999px;font-size:17px;box-shadow:0 5px 0 #60378d}.secondary{background:var(--site-secondary);color:var(--site-on-secondary);padding:11px 16px;border-radius:999px;font-weight:800}
-.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}.hint{font-size:13px;opacity:.72;line-height:1.5}.hidden{display:none!important}
-#game{min-height:65vh;display:flex;flex-direction:column;justify-content:space-between;gap:12px}
-.gamebar{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:800;flex-wrap:wrap}
-.progress{height:8px;background:light-dark(#f1e3f0,#3b3043);border-radius:20px;overflow:hidden;flex:1;min-width:90px}.progress span{display:block;height:100%;width:0;background:var(--site-primary);transition:width .3s}
-.questionzone{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;flex:1;min-height:230px;animation:floatin .5s ease}
-@keyframes floatin{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-.bigquestion{font-size:clamp(56px,12vw,112px);font-weight:1000;letter-spacing:-.05em;line-height:1.12;margin:14px 0;color:light-dark(#5f3191,#e5c7ff)}
-.timer{font-size:clamp(20px,4vw,34px);font-weight:900;color:light-dark(#a34b86,#f5acd8)}
-.answer{font-size:clamp(28px,6vw,52px);font-weight:950;color:light-dark(#22855d,#81e5b7);min-height:1.2em}
-.track{width:min(420px,80%);height:12px;border-radius:99px;background:light-dark(#f1e3f0,#3b3043);overflow:hidden}.track span{height:100%;display:block;background:linear-gradient(90deg,#e6a9d7,#9b73e8);width:100%}
-.stickers{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px}
-.sticker{aspect-ratio:1;border-radius:14px;background:light-dark(#fff2fb,#292232);border:1px dashed light-dark(#d9b9dc,#594662);display:grid;place-items:center;font-size:clamp(17px,3vw,28px)}
-.sticker.earned{background:linear-gradient(135deg,#fff1a8,#ffd3eb);border:2px solid #edb9d7;animation:pop .45s ease}
-@keyframes pop{50%{transform:scale(1.18)}}
-footer{text-align:center;font-size:12px;opacity:.65;padding:12px}
-@media(max-width:650px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collection-book{grid-template-columns:repeat(5,minmax(0,1fr))}.reward-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stickers{grid-template-columns:repeat(5,minmax(0,1fr))}.shell{padding:12px}.panel{padding:16px}}
-/* Landscape gameplay: fit the real v2 DOM to one viewport, with a wide centered question and no scrolling. */
-@media (orientation: landscape) and (max-height: 650px) {
-  html, body { height: 100%; min-height: 0; }
-  body.in-game { height: 100dvh; overflow: hidden; overscroll-behavior: none; }
-  body.in-game #app { height: 100dvh; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
-  body.in-game header, body.in-game footer { display: none; }
-  body.in-game main.shell { flex: 1 1 auto; width: 100%; max-width: none; height: 100%; min-height: 0; overflow: hidden; padding: 0; margin: 0; }
-  body.in-game #playing { height: 100%; min-height: 0; }
-  body.in-game #playing > #game { height: 100%; min-height: 0; width: 100%; margin: 0; border: 0; border-radius: 0; padding: max(8px, env(safe-area-inset-top)) clamp(18px, 4vw, 64px) max(8px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; overflow: hidden; }
-  body.in-game #game > .gamebar { flex: 0 0 auto; flex-wrap: nowrap; font-size: clamp(11px, 2.1vh, 14px); gap: clamp(6px, 1.5vw, 16px); }
-  body.in-game #game > .gamebar button { flex: 0 0 auto; padding: 7px 12px; font-size: clamp(11px, 2vh, 14px); white-space: nowrap; }
-  body.in-game #game > .gamebar .progress { max-width: 280px; }
-  body.in-game #game .questionzone { flex: 1 1 auto; min-height: 0; width: 100%; padding: 0; justify-content: center; gap: clamp(2px, .8vh, 7px); overflow: hidden; }
-  body.in-game #game .questionzone > div:first-child { font-size: clamp(14px, 3vh, 22px) !important; }
-  body.in-game #game .bigquestion { font-size: clamp(38px, 10vh, 76px); line-height: 1.02; margin: clamp(2px, .8vh, 8px) 0; }
-  body.in-game #game .timer { font-size: clamp(15px, 3.3vh, 22px); line-height: 1.1; }
-  body.in-game #game .track { height: 8px; flex: 0 0 auto; }
-  body.in-game #game .answer { font-size: clamp(20px, 4.5vh, 34px); min-height: 0; line-height: 1.1; }
-  body.in-game #game .gamebar:last-child > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-}
-@media (orientation: landscape) and (max-height: 420px) {
-  body.in-game #playing > #game { padding-left: 22px; padding-right: 22px; gap: 3px; }
-  body.in-game #game .bigquestion { font-size: clamp(32px, 9vh, 56px); }
-  body.in-game #game .questionzone > div:first-child { display: none; }
-}
+:root{--purple:#8752bd;--pink:#f6c9e1;--ink:#35213e;--bg:#fff7fc;--accent:#f08ab9;--accent2:#b8a0f5;--card:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Trebuchet MS",sans-serif}body{padding-bottom:env(safe-area-inset-bottom)}button,select,input{font:inherit}button{cursor:pointer}header{background:var(--purple);color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}header h1{font-size:22px;margin:0}header small{display:block;font-size:12px;opacity:.9;margin-top:3px}header .admin-btn{background:#fff;color:var(--purple);border:0;border-radius:999px;padding:9px 12px;font-weight:800;white-space:nowrap}
+main{max-width:820px;margin:auto;padding:10px}.card{background:var(--card);border:1px solid #f0d9ec;border-radius:20px;padding:15px;margin:10px 0;box-shadow:0 5px 18px #9d66a51a}h2{font-size:18px;margin:0 0 12px}.players,.row{display:flex;gap:10px}.player{flex:1;display:flex;align-items:center;gap:10px;text-align:left;background:#fff9fd;border:2px solid #f0d9ec;border-radius:16px;padding:9px;font:inherit;color:inherit;min-width:0}.player.selected{border-color:var(--purple);background:#f4e8ff}.player svg{width:58px;height:66px;flex:none}.player b{display:block;font-size:17px}.player small{display:block;font-size:11px;opacity:.7;margin-top:3px}
+label{display:block;font-size:13px;font-weight:800;margin:9px 0 5px}select,input[type=number],input[type=text]{width:100%;padding:11px;border:1px solid #e5cfe4;border-radius:12px;background:white;font:inherit;font-size:16px;color:inherit}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.primary{border:0;background:var(--purple);color:white;font-weight:800;padding:13px 16px;border-radius:999px;width:100%;margin-top:12px;font-size:16px}.secondary{border:0;background:var(--pink);color:#54244b;font-weight:800;padding:11px 14px;border-radius:999px}.stamps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.stamp{aspect-ratio:1;border-radius:12px;background:#fff2fb;border:1px dashed #d9b9dc;display:grid;place-items:center;font-size:24px}.stamp.earned{background:#fff1a8;border:2px solid #edb9d7}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{background:#fff8fd;border-radius:13px;padding:10px;font-size:13px}.stat b{display:block;font-size:22px;color:var(--purple)}.hidden{display:none!important}.history-row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #f1e3f0;font-size:13px}.note{font-size:12px;opacity:.72;line-height:1.45}.admin-panel{border:2px solid #d6b9ef}.admin-panel button{margin-top:8px}
+#game{--scene:#fff2fa;--scene2:#fce2f0;--sceneInk:#8752bd;text-align:center}#game .game-card{margin:0;background:var(--scene);border:2px solid #fff;box-shadow:0 8px 28px #9d66a51a;position:relative;overflow:hidden}#game .game-top{display:flex;align-items:center;gap:8px;justify-content:space-between;position:relative;z-index:1}#game .game-top .secondary{padding:8px 12px;font-size:13px}#counter{font-size:13px;font-weight:900;background:#fff9;border-radius:999px;padding:8px 12px}#sceneLabel{font-weight:900;font-size:clamp(12px,2vw,16px);margin-top:8px;color:var(--sceneInk)}.progress{height:8px;background:#ffffffa8;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}.question{font-size:clamp(38px,8vw,68px);line-height:1.08;font-weight:950;letter-spacing:-1px;margin:clamp(10px,2vh,22px) 0;color:#392047;overflow-wrap:anywhere}.timer{font-size:clamp(16px,3vw,23px);font-weight:900;color:#a34b86}.answer{font-size:clamp(19px,4vw,29px);font-weight:950;color:#22855d;min-height:1.2em;margin-top:6px}.game-actions{display:flex;gap:10px;justify-content:center;margin-top:10px;position:relative;z-index:2}.game-actions button{flex:1;min-width:0;max-width:320px;height:48px;margin:0;padding:0 8px;display:flex;align-items:center;justify-content:center;border-radius:999px;font-size:15px}.game-actions .secondary{background:#fff;color:#54244b;border:2px solid #e8b9d8;font-weight:900}.game-actions .primary{background:var(--purple);color:white;font-weight:900}.test-entry{display:flex;gap:8px;max-width:420px;margin:8px auto 0}.test-entry input{text-align:center;font-size:22px;font-weight:900;min-width:0}.test-entry button{white-space:nowrap;margin:0;padding:0 18px}.scene-doodles{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.45;font-size:clamp(18px,4vw,34px)}.doodle{position:absolute}.doodle.a{left:3%;top:24%}.doodle.b{right:4%;top:30%}.doodle.c{left:8%;bottom:9%}.doodle.d{right:8%;bottom:7%}.game-content{position:relative;z-index:1}
+#finish .card{text-align:center}#finish .big-finish{font-size:58px}
+@media(min-width:600px){main{padding:16px}.card{padding:17px}}
+@media(orientation:landscape) and (max-height:600px){body.in-game{overflow:hidden}body.in-game header{display:none}body.in-game main{padding:0;max-width:none;height:100dvh}body.in-game #game{height:100dvh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}body.in-game #game .game-card{height:100%;min-height:0;border-radius:0;padding:10px clamp(18px,4vw,56px);display:flex;flex-direction:column;justify-content:center}body.in-game #game .game-content{width:100%;max-width:900px;margin:auto;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:clamp(3px,1.1vh,8px)}body.in-game #game .game-top{flex:none}body.in-game #sceneLabel{margin-top:0}body.in-game #game .progress.top-progress{margin-top:2px!important}body.in-game .question{font-size:clamp(32px,8vh,58px);margin:clamp(2px,.8vh,7px) 0}body.in-game .answer{min-height:1em;margin-top:0}body.in-game .timer{font-size:clamp(15px,3.5vh,20px)}body.in-game .game-actions{margin-top:2px}body.in-game .game-actions button{height:clamp(36px,7.5vh,44px)}body.in-game .test-entry{margin-top:2px}body.in-game .test-entry input,body.in-game .test-entry button{height:38px;padding-top:0;padding-bottom:0}body.in-game .scene-doodles{opacity:.28}body.in-game #game .card{margin:0}body.in-game #answer:empty{display:none}}
+@media(max-width:520px) and (orientation:portrait){.settings-grid{grid-template-columns:1fr}.player svg{width:48px;height:58px}.player b{font-size:15px}}
 
-.section-note{font-size:13px;line-height:1.5;opacity:.78;margin:-6px 0 14px}.area-group{border:1px solid #ead6ef;border-radius:16px;padding:13px;margin:12px 0}.area-group h3{font-size:15px;margin-bottom:10px}.pill-check{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:999px;background:#fff5fc;border:1px solid #ead6ef;font-size:13px}.pill-check input{accent-color:var(--site-primary)}.reward-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.reward-stat{background:#fff4fb;border:1px solid #efd6ed;border-radius:14px;padding:12px;text-align:center}.reward-stat strong{display:block;font-size:22px;color:#8e5bc7}.collection-book{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.collect-slot{min-height:68px;border-radius:13px;border:1px solid #ead6ef;background:#fff7fc;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px}.collect-slot small{font-size:10px;color:#765b7b}.collect-slot.owned{background:linear-gradient(135deg,#fff0b8,#ffe1f1);border-color:#e9b7d9}.capsule-result{padding:16px;border-radius:18px;background:linear-gradient(135deg,#fce5ff,#fff2cc);text-align:center;margin-top:12px}.capsule-result .item-emoji{font-size:52px}.monthly-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.month-card{padding:9px;border-radius:12px;background:rgba(255,255,255,.7);text-align:center;font-size:12px}@media(max-width:600px){.monthly-grid{grid-template-columns:repeat(3,1fr)}}
-</style></head>
-<body><div id="app">
-<header><div class="brand">Princess Math Club <small>Little steps, magical minds</small></div><div class="crown">👑✨</div></header>
-<main class="shell">
+/* Capsule and princess collection additions, styled to match v1.5 */
+.reward-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.reward-stat{background:#fff8fd;border:1px solid #f0d9ec;border-radius:13px;padding:10px 6px;text-align:center;font-size:12px}
+.reward-stat strong{display:block;font-size:22px;color:var(--purple);margin-top:4px}
+.collection-book{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.collect-slot{min-height:68px;border-radius:13px;border:1px solid #f0d9ec;background:#fff9fd;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;overflow:hidden}
+.collect-slot small{font-size:10px;color:#765b7b;max-width:100%;overflow-wrap:anywhere;text-align:center}
+.collect-slot.owned{background:linear-gradient(135deg,#fff1a8,#ffdced);border:2px solid #edb9d7}
+.capsule-result{padding:16px;border-radius:18px;background:linear-gradient(135deg,#fce5ff,#fff2cc);text-align:center;margin-top:12px}
+.capsule-result .item-emoji{font-size:52px}
+.pill-check{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:12px;background:#fff9fd;border:1px solid #f0d9ec;font-size:13px;margin:7px 0}
+.pill-check input{accent-color:var(--purple)}
+@media(max-width:520px){.reward-stats{gap:5px}.reward-stat{font-size:11px;padding:9px 3px}.reward-stat strong{font-size:20px}.collection-book{grid-template-columns:repeat(5,minmax(0,1fr))}.collect-slot{min-height:58px;font-size:21px}}
+
+</style>
+</head>
+<body>
+<header><div><h1>Princess Math Club</h1><small>Little steps, magical minds ✨</small></div><button class="admin-btn" id="adminLogin">🔐 Admin</button></header>
+<main>
 <section id="setup">
- <div class="panel"><h2>👸 Choose Your Princess</h2><div class="players">
- <button class="player selected" data-player="Leah"><span class="emoji">👑🌸</span><strong>Leah</strong></button>
- <button class="player" data-player="Lena"><span class="emoji">👸🌷</span><strong>Lena</strong></button>
- </div></div>
- <div class="panel"><h2>📚 Learning Plan</h2>
- <p class="section-note">기본 학습 단계는 아이의 학년에 맞춰 자동으로 설정됩니다. 핵심 영역은 기본 선택되어 있으며, 추가 영역은 필요할 때 켜 주세요.</p>
- <div class="grid">
-  <div><label for="year">기본 학습 단계</label><select id="year"><option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Year 4</option><option>Year 5</option><option>Year 6</option></select></div>
-  <div><label for="count">Number of Questions</label><select id="count"><option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option></select></div>
-  <div><label for="seconds">난이도 / 문제 시간</label><select id="seconds"><option value="30">Very Easy · 30 sec</option><option value="25">Easy · 25 sec</option><option value="20" selected>Medium · 20 sec</option><option value="10">Hard · 10 sec</option><option value="5">Very Hard · 5 sec</option></select></div>
-  <div><label for="digits">Number Size</label><select id="digits"><option value="single">Single digit</option><option value="double">Double digit</option><option value="triple">Triple digit</option><option value="mixed" selected>Mixed digits</option></select></div>
-  <div><label for="addends">Number of Addends</label><select id="addends"><option value="2">2 numbers</option><option value="3">3 numbers</option><option value="4">4 numbers</option></select></div>
+ <div class="card"><h2>👸 Choose Your Princess</h2><div class="players">
+  <button class="player selected" data-player="Leah"><svg viewBox="0 0 80 90" role="img" aria-label="Original pop-star princess"><path d="M15 37 Q8 8 35 12 Q63 2 68 32 L63 55 20 57Z" fill="#4b244e" stroke="#392047" stroke-width="2"/><path d="M24 32 Q40 17 57 32 L60 51 Q57 69 40 70 Q23 68 20 51Z" fill="#ffd4b9" stroke="#392047" stroke-width="2"/><path d="M20 35 Q40 16 60 34 L58 44 Q44 34 22 44Z" fill="#3d1c46"/><circle cx="33" cy="48" r="2.5" fill="#392047"/><circle cx="48" cy="48" r="2.5" fill="#392047"/><path d="M35 57 Q41 62 47 56" fill="none" stroke="#c84f79" stroke-width="2.5" stroke-linecap="round"/><path d="M20 29 L24 7 39 19 52 4 60 29Z" fill="#f9d55b" stroke="#a86a2b" stroke-width="2"/><circle cx="40" cy="20" r="3" fill="#fff"/><path d="M22 72 Q40 63 58 72 L68 89 12 89Z" fill="#f06eac" stroke="#9a3b8d" stroke-width="2"/><path d="M40 71 L40 87" stroke="#fff" stroke-width="3"/><path d="M13 65 L4 49 10 46 23 63 M62 64 L73 47 78 51 67 70" fill="#ffd4b9" stroke="#392047" stroke-width="2"/><path d="M9 45 L15 34 18 47Z" fill="#8b54d6" stroke="#392047" stroke-width="1.5"/></svg><span><b>Leah</b><small>Pop-star princess · Year 3</small></span></button>
+  <button class="player" data-player="Lena"><svg viewBox="0 0 80 90" role="img" aria-label="Original little princess"><path d="M17 37 Q11 9 39 12 Q64 8 66 36 L61 56 20 56Z" fill="#8b4c32" stroke="#392047" stroke-width="2"/><path d="M24 33 Q40 20 56 33 L59 51 Q56 68 40 70 Q24 68 21 51Z" fill="#ffd6bb" stroke="#392047" stroke-width="2"/><circle cx="33" cy="48" r="2.5" fill="#392047"/><circle cx="48" cy="48" r="2.5" fill="#392047"/><path d="M35 57 Q40 61 46 56" fill="none" stroke="#c84f79" stroke-width="2.5" stroke-linecap="round"/><path d="M21 29 L23 12 34 20 43 7 53 20 60 12 61 31Z" fill="#f9d55b" stroke="#a86a2b" stroke-width="2"/><circle cx="43" cy="19" r="3" fill="#fff"/><path d="M22 72 Q40 63 58 72 L70 89 10 89Z" fill="#b8a0f5" stroke="#7752b7" stroke-width="2"/><path d="M40 71 L40 87" stroke="#fff" stroke-width="3"/><path d="M13 64 L5 49 11 46 23 63 M62 64 L72 49 77 52 67 70" fill="#ffd6bb" stroke="#392047" stroke-width="2"/><circle cx="20" cy="39" r="5" fill="#e5a4c7" stroke="#392047" stroke-width="1.5"/><circle cx="60" cy="39" r="5" fill="#e5a4c7" stroke="#392047" stroke-width="1.5"/></svg><span><b>Lena</b><small>Little princess · Year 1</small></span></button>
+ </div><p class="note">Original, friendly preschool-cartoon characters. Leah has a pop-star princess look; Lena has her own princess look.</p></div>
+ <div class="card"><h2>🪄 Learning Settings</h2>
+  <div class="row" style="gap:12px"><div style="flex:1"><label for="mode">Game mode</label><select id="mode"><option value="practice" selected>Practice · auto-play</option><option value="test">Test · enter answers</option></select></div><div style="flex:1"><label for="count">Questions per game</label><select id="count"><option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option></select></div></div>
+  <label for="topic">Learning focus</label><select id="topic"></select>
+  <label for="difficulty">Difficulty · time per question</label><select id="difficulty"><option value="Very hard">Very hard · 5 seconds</option><option value="Hard">Hard · 10 seconds</option><option value="Medium">Medium · 20 seconds</option><option value="Easy">Easy · 25 seconds</option><option value="Very easy">Very easy · 30 seconds</option></select>
+  <p class="note" id="levelNote">Curriculum-based questions are matched to the selected princess's year level.</p>
+  <button class="primary" id="start">Start Royal Challenge ✨</button>
  </div>
- <div class="area-group"><h3>⭐ 핵심 영역 · Core Learning Areas</h3><div class="checks">
-  <label class="pill-check"><input type="checkbox" class="area-check" value="number-sense" checked> Number Sense & Place Value</label>
-  <label class="pill-check"><input type="checkbox" class="area-check" value="addition" checked> Addition</label>
-  <label class="pill-check"><input type="checkbox" class="area-check" value="subtraction" checked> Subtraction</label>
-  <label class="pill-check" id="multiplicationCore"><input type="checkbox" class="area-check" value="multiplication"> Multiplication</label>
-  <label class="pill-check" id="divisionCore"><input type="checkbox" class="area-check" value="division"> Division</label>
- </div></div>
- <div class="area-group"><h3>✨ 추가 영역 · Extra Learning Areas</h3><div class="checks">
-  <label class="pill-check"><input type="checkbox" class="area-check" value="patterns-fractions"> Patterns & Fractions</label>
-  <label class="pill-check"><input type="checkbox" class="area-check" value="mixed-review"> Mixed Review</label>
-  <label class="pill-check"><input type="checkbox" class="area-check" value="challenge"> Challenge</label>
-  <label class="pill-check"><input type="checkbox" class="area-check" value="previous-review"> Previous Learning Review</label>
- </div></div>
- <div class="grid"><div><label for="operation">Operation preference</label><select id="operation"><option value="Addition">Addition</option><option value="Subtraction">Subtraction</option><option value="Multiplication">Multiplication</option><option value="Division">Division</option><option value="Mixed">Mixed Operations</option></select></div></div>
- <div style="margin-top:18px"><label>Practice Style</label><div class="checks">
- <label class="check"><input type="checkbox" id="carry" checked> Include carrying / regrouping</label>
- <label class="check"><input type="checkbox" id="negative"> Allow negative answers</label>
- <label class="check"><input type="checkbox" id="sound" checked> Gentle sound</label>
- </div></div>
- <p class="hint">설정은 이 기기에 저장됩니다. 완료한 문제 10개마다 캡슐 1개를 획득합니다. 월별 스티커는 별도로 매월 최대 20개까지 모을 수 있습니다.</p>
- <div class="actions"><button class="primary" id="start">Start Royal Challenge ✨</button><button class="secondary" id="reset">Reset Settings</button></div>
- </div>
- <div class="panel"><h2>📅 Monthly Sticker Record</h2><p class="hint">Collect up to 20 stickers every month. Your monthly history and consecutive-month record are saved.</p><div id="monthlyStickerRecord"></div></div>
-  <div class="panel"><h2>🎀 Sticker Collection</h2><p class="hint">Earn one magical sticker for each completed challenge. Collect all 20!</p><div class="stickers" id="collection"></div></div>
-  <div class="panel"><h2>🎁 Magical Capsules</h2><p class="hint">문제를 10개 완료할 때마다 캡슐 1개를 받아요. 제한 없이 모을 수 있고, 캡슐에는 공주 또는 액세서리가 들어 있어요.</p><div class="reward-stats"><div class="reward-stat">완료한 문제<strong id="questionProgress">0 / 10</strong></div><div class="reward-stat">보유 캡슐<strong id="capsuleCount">0</strong></div><div class="reward-stat">공주 수집<strong id="princessProgress">0 / 50</strong></div></div><button class="primary" id="openCapsule">Open a Capsule ✨</button><div id="capsuleResult" class="capsule-result hidden" aria-live="polite"></div></div>
-  <div class="panel"><h2>👑 Princess Collection Book</h2><p class="hint">50명의 공주를 찾아보세요. 아직 만나지 못한 공주는 실루엣으로 표시됩니다.</p><div class="collection-book" id="princessBook"></div></div>
-  <div class="panel"><h2>💖 My Princess</h2><p class="hint">모은 액세서리를 확인하고 내 공주를 꾸며보세요.</p><div id="myPrincess" style="text-align:center;font-size:24px;padding:10px">👸✨</div><div id="accessoryInventory" class="checks"></div></div>
+ <div class="card"><h2>🎀 This Month's Stickers</h2><div class="row" style="justify-content:space-between;align-items:center"><b id="monthLabel">Month</b><b id="monthCount">0 / 20</b></div><p class="note">Each completed challenge earns one sticker, up to 20 per child each month.</p><div id="stamps" class="stamps"></div></div>
+ <div class="card"><h2>🏆 Progress & Records</h2><div class="stats"><div class="stat">All-time stickers<b id="allStamps">0</b></div><div class="stat">Questions completed<b id="allQuestions">0</b></div><div class="stat">Correct in Test mode<b id="allCorrect">0</b></div><div class="stat">Best correct streak<b id="bestStreak">0</b></div></div><h3 style="margin-top:18px">📚 Monthly history</h3><div id="history"></div></div>
+ <div class="card"><h2>🎁 Magical Capsules</h2><p class="note">Complete 10 questions to earn 1 capsule. Capsules can be collected without a monthly limit and contain a princess or an accessory.</p><div class="reward-stats"><div class="reward-stat">Questions to next capsule<strong id="questionProgress">0 / 10</strong></div><div class="reward-stat">Capsules<strong id="capsuleCount">0</strong></div><div class="reward-stat">Princesses<strong id="princessProgress">0 / 50</strong></div></div><button class="primary" id="openCapsule">Open a Capsule ✨</button><div id="capsuleResult" class="capsule-result hidden" aria-live="polite"></div></div>
+ <div class="card"><h2>👑 Princess Collection Book</h2><p class="note">Discover all 50 princesses. Princesses you have not met yet appear as mysteries.</p><div class="collection-book" id="princessBook"></div></div>
+ <div class="card"><h2>💖 My Princess</h2><p class="note">See your accessories and choose which ones your princess wears.</p><div id="myPrincess" style="text-align:center;font-size:24px;padding:10px">👸✨</div><div id="accessoryInventory"></div></div>
 </section>
-<section id="playing" class="hidden">
- <div class="panel" id="game">
-  <div class="gamebar"><button class="secondary" id="home">← Settings</button><span id="who">👑 Leah</span><div class="progress"><span id="progress"></span></div><span id="counter">1 / 20</span></div>
-  <div class="questionzone" id="questionzone"><div style="font-size:30px">✨ Solve the magic math! ✨</div><div class="bigquestion" id="question">7 + 5 = ?</div><div class="timer" id="timer">10 seconds</div><div class="track"><span id="timerbar"></span></div><div class="answer" id="answer"></div></div>
-  <div class="gamebar"><span>🌷 Take your time and do your best!</span><button class="secondary" id="skip">Show Answer</button></div>
- </div>
-</section>
-<section id="finish" class="hidden"><div class="panel" style="text-align:center"><div style="font-size:64px">🏰👑🎉</div><h2 id="finishTitle">Amazing work, Princess!</h2><p id="finishText">You completed your royal challenge!</p><div style="font-size:44px;margin:20px">🌟 🦄 💎 🌸</div><button class="primary" id="again">Play Again</button> <button class="secondary" id="finishSettings">Settings</button></div><div class="panel"><h2>🏆 Your Sticker Collection</h2><div class="stickers" id="finishCollection"></div></div></section>
-</main><footer>Made with love, sparkles and a little bit of math 💗</footer></div>
+<section id="game" class="hidden"><div class="card game-card"><div class="scene-doodles"><span class="doodle a">✦</span><span class="doodle b">♡</span><span class="doodle c">✿</span><span class="doodle d">★</span></div><div class="game-content"><div class="game-top"><button id="back" class="secondary">← Main Menu</button><div id="counter">1 / 15</div></div><div class="progress top-progress" style="margin-top:9px"><span id="progress"></span></div><div id="sceneLabel">✨ Royal Number Challenge ✨</div><div id="question" class="question">7 + 5 = ?</div><div id="timer" class="timer">20 seconds</div><div class="progress" style="margin:8px auto;max-width:320px"><span id="timerbar" style="width:100%"></span></div><div id="answer" class="answer"></div><div id="testEntry" class="test-entry hidden"><input id="userAnswer" type="number" inputmode="numeric" placeholder="Your answer" aria-label="Your answer"><button id="submitAnswer" class="primary">Check</button></div><div class="game-actions"><button id="skip" class="secondary">Skip →</button></div></div></div></section>
+<section id="finish" class="hidden"><div class="card"><div class="big-finish">🏰👑🎉</div><h2 id="finishTitle">Wonderful work!</h2><p id="finishText"></p><button id="playAgain" class="primary">Play Again</button><button id="finishSettings" class="secondary" style="margin-top:10px;width:100%">Main Menu</button></div></section>
+<section id="adminPanel" class="card admin-panel hidden"><h2>🔐 Admin tools</h2><p class="note">Record reset tools. Resetting records cannot be undone.</p><button class="secondary" id="resetChild" style="width:100%">Reset records for <span id="adminChildName">Leah</span></button><button class="primary" id="resetAll">Reset ALL records</button><button class="secondary" id="adminClose" style="width:100%">Close Admin</button></section>
+<p class="note" style="text-align:center">Progress is saved on this device. Clearing Safari website data can erase local records; there is no cloud sync.</p>
+</main>
 <script>
-"use strict";
-
-const $ = (id) => document.getElementById(id);
-
-const defaults = {
-  learningArea: "number-sense",
-  areas: ["number-sense","addition","subtraction"],
-  year: "Year 1",
-  operation: "Addition",
-  digits: "mixed",
-  addends: "2",
-  seconds: "10",
-  count: "20",
-  carry: true,
-  negative: false,
-  sound: true
-};
-
-let settings = {...defaults};
-let player = "Leah";
-let questions = [];
-let index = 0;
-let remaining = 10;
-let tick = null;
-let answerTimer = null;
-let stickerCount = 0;
-let monthlyStickerRecord = {};
-let consecutiveMonths = 0;
-let audio = null;
-let answered = false;
-let rewardState = { completed:0, capsules:0, princesses:[], accessories:[], equipped:[] };
-let capsulePity = 0;
-let questionCountedThisQuestion = false;
-
-const stickerArt = ["🌸","👑","🦄","💎","🦋","🌈","🩷","🐱","🪄","⭐","🧁","🦢","🎀","🌷","🐬","🍓","✨","🏰","💖","🌟"];
-
-function safeStorageGet(key, fallback) {
-  try {
-    const value = localStorage.getItem(key);
-    return value === null ? fallback : value;
-  } catch (e) {
-    return fallback;
-  }
-}
-
-function safeStorageSet(key, value) {
-  try { localStorage.setItem(key, value); } catch (e) {}
-}
-
-function monthKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}
-function loadMonthlyRecords(){try{monthlyStickerRecord=JSON.parse(safeStorageGet("pmc-monthly-stickers","{}"))||{};}catch(e){monthlyStickerRecord={};} calculateStreak();}
-function saveMonthlyRecords(){safeStorageSet("pmc-monthly-stickers",JSON.stringify(monthlyStickerRecord));}
-function calculateStreak(){let d=new Date(); consecutiveMonths=0; while(Number(monthlyStickerRecord[monthKey(d)]||0)>0){consecutiveMonths++; d.setMonth(d.getMonth()-1);} }
-function addMonthlySticker(){const k=monthKey(); monthlyStickerRecord[k]=Math.min(20,Number(monthlyStickerRecord[k]||0)+1); saveMonthlyRecords(); calculateStreak(); renderMonthlyRecord();}
-function renderMonthlyRecord(){const el=$("monthlyStickerRecord");if(!el)return;const keys=Object.keys(monthlyStickerRecord).sort().slice(-12).reverse();el.innerHTML=`<div style="text-align:center;margin:8px 0 12px">🔥 Consecutive months: <strong>${consecutiveMonths}</strong></div><div class="monthly-grid">${keys.map(k=>`<div class="month-card"><b>${k}</b><br>⭐ ${monthlyStickerRecord[k]}/20</div>`).join("")||'<div class="month-card">No record yet</div>'}</div>`;}
-
+const $=id=>document.getElementById(id);
+const art=["🌸","👑","💎","🦋","🩷","🐱","🪄","⭐","🧁","🦢","🎀","🌷","🍓","✨","🏰","💖","🌟","🎤","🎵","🌈"];
+const themes=[{name:"Rose Garden",bg:"#fff0f7",bg2:"#f9d7e9",accent:"#e98ab7",ink:"#8a3f78",doodles:["🌸","♡","✿","✨"]},{name:"Starry Stage",bg:"#f3efff",bg2:"#e0d5ff",accent:"#a88ae9",ink:"#6543a0",doodles:["⭐","🎤","✦","💜"]},{name:"Rainbow Palace",bg:"#effbff",bg2:"#d8f2fb",accent:"#66b9d9",ink:"#327b9d",doodles:["🌈","☁","✦","💎"]},{name:"Golden Crown Hall",bg:"#fff8dc",bg2:"#f8e7a6",accent:"#e3b944",ink:"#8a6421",doodles:["👑","✨","★","🌟"]},{name:"Butterfly Meadow",bg:"#f0fff5",bg2:"#d6f5df",accent:"#79c69b",ink:"#347e59",doodles:["🦋","🌷","✿","🍓"]},{name:"Lavender Ballroom",bg:"#f8f0ff",bg2:"#e9dafa",accent:"#bb8ee0",ink:"#7950a2",doodles:["🎀","💜","✧","🌙"]}];
+const defaultsByPlayer={Leah:{mode:"practice",topic:"Auto practice",difficulty:"Medium",count:"15"},Lena:{mode:"practice",topic:"Auto practice",difficulty:"Easy",count:"10"}};
+const SECONDS={"Very hard":5,"Hard":10,"Medium":20,"Easy":25,"Very easy":30};
+const ADMIN_PIN="2580";
+let player="Leah",data={},settings={...defaultsByPlayer.Leah},settingsByPlayer={},questions=[],idx=0,remaining=20,timer=null,advanceTimer=null,answered=false,correct=0,streak=0,best=0,completed=0,sessionCorrect=0,sessionSkipped=0,currentTheme=themes[0],sessionFinished=false;
+const kids=["Leah","Lena"];
+let rewardState={completed:0,capsules:0,princesses:[],accessories:[],equipped:[]};
+let capsulePity=0;
+let questionCountedThisQuestion=false;
 const princessNames=["Rose","Luna","Aurora","Ivy","Ruby","Pearl","Daisy","Stella","Violet","Cleo","Mira","Iris","Hazel","Skye","Lily","Opal","Nova","Poppy","Willow","Amber","Celeste","Faye","Sophie","Bella","Aria","Jasmine","Elena","Mia","Zara","Nina","Freya","Talia","Esme","Ayla","Sienna","Cora","Thea","Mabel","Wren","Flora","Serena","Lyra","Aurelia","Marina","Noelle","Amara","Estelle","Eloise","Anya","Camellia"];
 const princessLooks=["👸🏻","👸🏼","👸🏽","👸🏾","👸🏼","👸🏻","👸🏽","👸🏾","👸🏻","👸🏼"];
 const accessoriesPool=[{id:"crown",name:"Golden Crown",emoji:"👑"},{id:"wand",name:"Magic Wand",emoji:"🪄"},{id:"bow",name:"Pink Bow",emoji:"🎀"},{id:"flower",name:"Flower",emoji:"🌸"},{id:"necklace",name:"Gem Necklace",emoji:"📿"},{id:"sparkles",name:"Sparkles",emoji:"✨"},{id:"bag",name:"Princess Bag",emoji:"👛"},{id:"shoes",name:"Glass Slippers",emoji:"👠"},{id:"heart",name:"Heart Gem",emoji:"💖"},{id:"butterfly",name:"Butterfly",emoji:"🦋"},{id:"tiara",name:"Silver Tiara",emoji:"💎"},{id:"rose",name:"Rose Bouquet",emoji:"💐"}];
-function loadRewards(){try{rewardState=JSON.parse(safeStorageGet("pmc-rewards-v1-"+player,"null"))||{completed:0,capsules:0,princesses:[],accessories:[],equipped:[]};}catch(e){rewardState={completed:0,capsules:0,princesses:[],accessories:[],equipped:[]};} capsulePity=0; renderRewards();}
-function saveRewards(){safeStorageSet("pmc-rewards-v1-"+player,JSON.stringify(rewardState));renderRewards();}
-function renderRewards(){const progress=rewardState.completed%10;$("questionProgress").textContent=`${progress} / 10`;$("capsuleCount").textContent=rewardState.capsules;$("princessProgress").textContent=`${rewardState.princesses.length} / 50`;$("openCapsule").disabled=rewardState.capsules<1;$("openCapsule").style.opacity=rewardState.capsules<1?".5":"1";
- const book=$("princessBook"); if(book)book.innerHTML=princessNames.map((n,i)=>{let owned=rewardState.princesses.includes(i);return `<div class="collect-slot ${owned?'owned':''}" title="${owned?n:'Not discovered'}"><span>${owned?princessLooks[i%princessLooks.length]:'👤'}</span><small>${owned?n:'Mystery '+String(i+1).padStart(2,'0')}</small></div>`}).join("");
- const inv=$("accessoryInventory");if(inv)inv.innerHTML=rewardState.accessories.length?rewardState.accessories.map(id=>{const a=accessoriesPool.find(x=>x.id===id);return a?`<label class="pill-check"><input type="checkbox" data-equip="${a.id}" ${rewardState.equipped.includes(a.id)?'checked':''}> ${a.emoji} ${a.name}</label>`:''}).join(""):'<span class="hint">캡슐을 열어 첫 액세서리를 모아 보세요!</span>';
- const my=$("myPrincess");if(my){const p=rewardState.princesses.length?rewardState.princesses[rewardState.princesses.length-1]:null;my.innerHTML=`<div style="font-size:52px">${p===null?'👸':princessLooks[p%princessLooks.length]}</div><div>${p===null?'Your princess is waiting!':princessNames[p]}</div><div style="font-size:26px;margin-top:6px">${rewardState.equipped.map(id=>accessoriesPool.find(a=>a.id===id)?.emoji||'').join(' ')}</div>`;}
-}
-function countCompletedQuestion(){if(questionCountedThisQuestion)return;questionCountedThisQuestion=true;rewardState.completed++;if(rewardState.completed%10===0){rewardState.capsules++;saveRewards();const result=$("capsuleResult");result.classList.remove("hidden");result.innerHTML='🎉 You earned a capsule! Open it when you are ready.';}else saveRewards();}
-function openCapsule(){if(rewardState.capsules<1)return;rewardState.capsules--;let item;
- const unowned=princessNames.map((_,i)=>i).filter(i=>!rewardState.princesses.includes(i));
- // Favor new discoveries; after 2 consecutive duplicate/accessory outcomes, guarantee a new princess if any remain.
- const wantPrincess=unowned.length>0&&(capsulePity>=2||Math.random()<0.62);
- if(wantPrincess){const i=unowned[rand(0,unowned.length-1)];rewardState.princesses.push(i);capsulePity=0;item={emoji:princessLooks[i%princessLooks.length],name:princessNames[i]+' the Princess',kind:'New Princess'};}
- else {let pool=accessoriesPool.filter(a=>!rewardState.accessories.includes(a.id));if(pool.length){const a=pool[rand(0,pool.length-1)];rewardState.accessories.push(a.id);item={emoji:a.emoji,name:a.name,kind:'New Accessory'};capsulePity++;}else if(unowned.length){const i=unowned[rand(0,unowned.length-1)];rewardState.princesses.push(i);capsulePity=0;item={emoji:princessLooks[i%princessLooks.length],name:princessNames[i]+' the Princess',kind:'New Princess'};}else{const a=accessoriesPool[rand(0,accessoriesPool.length-1)];item={emoji:'🎁',name:'Bonus capsule sparkle',kind:'Duplicate bonus'};capsulePity++;}}
- const result=$("capsuleResult");result.classList.remove("hidden");result.innerHTML=`<div style="font-size:13px;font-weight:900">${item.kind}</div><div class="item-emoji">${item.emoji}</div><h3>${item.name}</h3><p class="hint">${item.kind==='Duplicate bonus'?'You have collected all princesses and accessories in this set.': 'Added to your collection!'}</p>`;saveRewards();}
-
-function load() {
-  try {
-    const saved = JSON.parse(safeStorageGet("princessMathSettings", "{}"));
-    settings = {...defaults, ...(saved && typeof saved === "object" ? saved : {})};
-    if(!settings.learningArea) settings.learningArea="number-sense";
-  } catch (e) {
-    settings = {...defaults};
-  }
-  player = safeStorageGet("princessMathPlayer", "Leah");
-  settings.year = player === "Leah" ? "Year 3" : "Year 1";
-  settings.areas = Array.isArray(settings.areas) ? settings.areas : defaults.areas.slice();
-  loadMonthlyRecords();
-  loadRewards();
-  stickerCount = Math.max(0, Math.min(20, Number(safeStorageGet("princessMathStickers", "0")) || 0));
-}
-
-function save() {
-  safeStorageSet("princessMathSettings", JSON.stringify(settings));
-  safeStorageSet("princessMathPlayer", player);
-  safeStorageSet("princessMathStickers", String(stickerCount));
-}
-
-function fillForm() {
-  for (const k of ["year","operation","digits","addends","seconds","count"]) {
-    const el = $(k);
-    if (el) el.value = settings[k];
-  }
-  for (const k of ["carry","negative","sound"]) {
-    const el = $(k);
-    if (el) el.checked = !!settings[k];
-  }
-  document.querySelectorAll(".area-check").forEach(el => el.checked = (settings.areas||defaults.areas).includes(el.value));
-  applyAgeDefaults(false);
-
-  function applyAgeDefaults(resetAreas){
- const year=$("year");if(!year)return;
- const target=player==="Leah"?"Year 3":"Year 1";
- year.value=target;settings.year=target;
- const mult=document.querySelector('.area-check[value="multiplication"]');const div=document.querySelector('.area-check[value="division"]');
- if(player==="Leah"){if(mult)mult.checked=true;if(div)div.checked=true;}
- else {if(mult)mult.checked=false;if(div)div.checked=false;}
- if(resetAreas){const arr=player==="Leah"?["number-sense","addition","subtraction","multiplication","division"]:["number-sense","addition","subtraction"];settings.areas=arr;document.querySelectorAll(".area-check").forEach(el=>el.checked=arr.includes(el.value));save();}
-}
-$("openCapsule").addEventListener("click",openCapsule);
-document.addEventListener("change",e=>{if(e.target.matches("[data-equip]")){const id=e.target.dataset.equip;if(e.target.checked&&!rewardState.equipped.includes(id))rewardState.equipped.push(id);if(!e.target.checked)rewardState.equipped=rewardState.equipped.filter(x=>x!==id);saveRewards();}});
-$("year").addEventListener("change",()=>{settings.year=$("year").value;save();});
-
-document.querySelectorAll("[data-player]").forEach((b) => {
-    b.classList.toggle("selected", b.dataset.player === player);
-  });
-
-  renderStickers();
-}
-
-function readForm() {
-  for (const k of ["year","operation","digits","addends","seconds","count"]) {
-    const el = $(k);
-    if (el) settings[k] = el.value;
-  }
-  for (const k of ["carry","negative","sound"]) {
-    const el = $(k);
-    if (el) settings[k] = el.checked;
-  }
-  settings.areas = [...document.querySelectorAll(".area-check:checked")].map(el=>el.value);
-  if(!settings.areas.length){settings.areas=["number-sense"];document.querySelector(".area-check[value=number-sense]").checked=true;}
-  settings.learningArea=settings.areas[0];
-  save();
-}
-
-function renderStickers() {
-  renderMonthlyRecord();
-  ["collection","finishCollection"].forEach((id) => {
-    const el = $(id);
-    if (!el) return;
-
-    el.innerHTML = stickerArt.map((s, i) =>
-      `<div class="sticker ${i < stickerCount ? "earned" : ""}" title="${i < stickerCount ? "Collected" : "Not collected yet"}">${i < stickerCount ? s : "?"}</div>`
-    ).join("");
-  });
-}
-
-function rand(a, b) {
-  return Math.floor(Math.random() * (b - a + 1)) + a;
-}
-
-function num() {
-  let mode = settings.digits;
-  if (mode === "mixed") mode = ["single","double","triple"][rand(0,2)];
-
-  if (mode === "single") return rand(1,9);
-  if (mode === "double") return rand(10,99);
-  return rand(100,999);
-}
-
-function makeQuestion() {
-  const areas=(settings.areas&&settings.areas.length?settings.areas:[settings.learningArea||"number-sense"]);
-  const area=areas[rand(0,areas.length-1)];
-  let op=settings.operation;
-  if(area==="addition") op="Addition";
-  else if(area==="subtraction") op="Subtraction";
-  else if(area==="multiplication") op="Multiplication";
-  else if(area==="division") op="Division";
-  else if(area==="mixed-review"||area==="challenge"||area==="previous-review") op=["Addition","Subtraction","Multiplication","Division"][rand(0,3)];
-  else if(area==="number-sense") {
-    const a=rand(10,Math.max(20,settings.year==="Year 1"?20:100));
-    const b=rand(1,Math.min(9,a));
-    const kind=rand(0,2);
-    if(kind===0)return {text:`What is ${a} more than ${b}?`,answer:a+b};
-    if(kind===1)return {text:`Which number is greater: ${a} or ${b}?`,answer:Math.max(a,b)};
-    return {text:`${a} = ${Math.floor(a/10)*10} + ?`,answer:a-Math.floor(a/10)*10};
-  } else if(area==="patterns-fractions") {
-    if(rand(0,1)===0){const a=rand(1,8),step=rand(2,5);return {text:`${a}, ${a+step}, ${a+2*step}, ?`,answer:a+3*step};}
-    const den=rand(2,4),numr=rand(1,den-1);return {text:`What is ${numr} of ${den} equal parts? (${den} equal parts make 1 whole)`,answer:`${numr}/${den}`};
-  }
-  if (op === "Mixed") op = ["Addition","Subtraction","Multiplication","Division"][rand(0,3)];
-
-  if (op === "Addition") {
-    const n = Math.max(2, Number(settings.addends) || 2);
-    let parts = [];
-    for (let i = 0; i < n; i++) parts.push(num());
-
-    if (!settings.carry) {
-      parts = parts.map(() => rand(1,9));
-    }
-
-    return {
-      text: parts.join(" + ") + " = ?",
-      answer: parts.reduce((x,y) => x + y, 0)
-    };
-  }
-
-  if (op === "Subtraction") {
-    let a = num();
-    let b = num();
-
-    if (!settings.negative && a < b) [a,b] = [b,a];
-
-    if (!settings.carry) {
-      a = rand(10,99);
-      b = rand(1, Math.min(9,a));
-    }
-
-    return {
-      text: `${a} − ${b} = ?`,
-      answer: a - b
-    };
-  }
-
-  if (op === "Multiplication") {
-    const a = settings.digits === "single" ? rand(1,9) : rand(2,12);
-    const b = rand(1,12);
-
-    return {
-      text: `${a} × ${b} = ?`,
-      answer: a * b
-    };
-  }
-
-  const divisor = rand(1,12);
-  const answer = rand(1,12);
-
-  return {
-    text: `${answer * divisor} ÷ ${divisor} = ?`,
-    answer
-  };
-}
-
-function showSection(id) {
-  ["setup","playing","finish"].forEach((x) => {
-    const el = $(x);
-    if (el) el.classList.toggle("hidden", x !== id);
-  });
-  // Activate the dedicated, no-scroll landscape gameplay layout only while playing.
-  document.body.classList.toggle("in-game", id === "playing");
-  if (id !== "playing") window.scrollTo({top: 0, behavior: "auto"});
-}
-
-function stopTimers() {
-  if (tick !== null) {
-    clearInterval(tick);
-    tick = null;
-  }
-  if (answerTimer !== null) {
-    clearTimeout(answerTimer);
-    answerTimer = null;
-  }
-}
-
-function start() {
-  stopTimers();
-  readForm();
-
-  const count = Math.max(1, Number(settings.count) || 20);
-  questions = Array.from({length: count}, makeQuestion);
-  index = 0;
-  answered = false;
-
-  showSection("playing");
-
-  $("who").textContent = (player === "Leah" ? "👑🌸 " : "👸🌷 ") + player;
-  nextQuestion();
-}
-
-function nextQuestion() {
-  stopTimers();
-
-  if (index >= questions.length) {
-    finish();
-    return;
-  }
-
-  answered = false;
-  questionCountedThisQuestion = false;
-
-  const q = questions[index];
-  $("question").textContent = q.text;
-  $("answer").textContent = "";
-  $("counter").textContent = `${index + 1} / ${questions.length}`;
-  $("progress").style.width = `${(index / questions.length) * 100}%`;
-  $("timerbar").style.width = "100%";
-
-  const seconds = Math.max(1, Number(settings.seconds) || 10);
-  remaining = seconds;
-
-  $("timer").textContent = `${remaining} seconds`;
-
-  const zone = $("questionzone");
-  zone.style.animation = "none";
-  void zone.offsetWidth;
-  zone.style.animation = "floatin .5s ease";
-
-  playTone();
-
-  tick = setInterval(() => {
-    remaining--;
-
-    $("timer").textContent =
-      remaining > 0 ? `${remaining} seconds` : "Time's up!";
-
-    $("timerbar").style.width =
-      `${Math.max(0, remaining / seconds * 100)}%`;
-
-    if (remaining <= 0) reveal();
-  }, 1000);
-}
-
-function reveal() {
-  if (answered) return;
-  answered = true;
-  countCompletedQuestion();
-
-  if (tick !== null) {
-    clearInterval(tick);
-    tick = null;
-  }
-
-  $("answer").textContent = "Answer: " + questions[index].answer;
-  $("timer").textContent = "✨ Well done for trying!";
-
-  answerTimer = setTimeout(() => {
-    answerTimer = null;
-    index++;
-    nextQuestion();
-  }, 1800);
-}
-
-function finish() {
-  stopTimers();
-  addMonthlySticker();
-
-  stickerCount = Math.min(20, stickerCount + 1);
-  save();
-  renderStickers();
-
-  showSection("finish");
-
-  $("finishTitle").textContent = `Wonderful work, ${player}!`;
-  $("finishText").textContent =
-    `You completed ${questions.length} questions and earned a magical sticker! You have collected ${stickerCount} of 20 stickers.`;
-}
-
-function playTone() {
-  if (!settings.sound) return;
-
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-
-    audio = audio || new AudioCtx();
-
-    if (audio.state === "suspended") {
-      audio.resume().catch(() => {});
-    }
-
-    const now = audio.currentTime;
-
-    [523.25,659.25].forEach((f,i) => {
-      const o = audio.createOscillator();
-      const g = audio.createGain();
-
-      o.type = "sine";
-      o.frequency.value = f;
-
-      g.gain.setValueAtTime(0.0001, now + i * 0.12);
-      g.gain.exponentialRampToValueAtTime(0.035, now + i * 0.12 + 0.03);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.12 + 0.22);
-
-      o.connect(g);
-      g.connect(audio.destination);
-
-      o.start(now + i * 0.12);
-      o.stop(now + i * 0.12 + 0.24);
-    });
-  } catch (e) {}
-}
-
-function applyAgeDefaults(resetAreas){
- const year=$("year");if(!year)return;
- const target=player==="Leah"?"Year 3":"Year 1";
- year.value=target;settings.year=target;
- const mult=document.querySelector('.area-check[value="multiplication"]');const div=document.querySelector('.area-check[value="division"]');
- if(player==="Leah"){if(mult)mult.checked=true;if(div)div.checked=true;}
- else {if(mult)mult.checked=false;if(div)div.checked=false;}
- if(resetAreas){const arr=player==="Leah"?["number-sense","addition","subtraction","multiplication","division"]:["number-sense","addition","subtraction"];settings.areas=arr;document.querySelectorAll(".area-check").forEach(el=>el.checked=arr.includes(el.value));save();}
-}
-$("openCapsule").addEventListener("click",openCapsule);
-document.addEventListener("change",e=>{if(e.target.matches("[data-equip]")){const id=e.target.dataset.equip;if(e.target.checked&&!rewardState.equipped.includes(id))rewardState.equipped.push(id);if(!e.target.checked)rewardState.equipped=rewardState.equipped.filter(x=>x!==id);saveRewards();}});
-$("year").addEventListener("change",()=>{settings.year=$("year").value;save();});
-
-document.querySelectorAll("[data-player]").forEach((b) => {
-  b.addEventListener("click", () => {
-    player = b.dataset.player;
-    applyAgeDefaults(true);
-    loadRewards();
-
-    document.querySelectorAll("[data-player]").forEach((x) => {
-      x.classList.toggle("selected", x === b);
-    });
-
-    save();
-  });
-});
-
-$("start").addEventListener("click", (e) => {
-  e.preventDefault();
-  start();
-});
-
-$("skip").addEventListener("click", (e) => {
-  e.preventDefault();
-  reveal();
-});
-
-$("home").addEventListener("click", (e) => {
-  e.preventDefault();
-  stopTimers();
-  fillForm();
-  showSection("setup");
-});
-
-$("reset").addEventListener("click", (e) => {
-  e.preventDefault();
-  stopTimers();
-  settings = {...defaults, year:player==="Leah"?"Year 3":"Year 1", areas:player==="Leah"?["number-sense","addition","subtraction","multiplication","division"]:["number-sense","addition","subtraction"]};
-  fillForm();
-  save();
-});
-
-$("again").addEventListener("click", (e) => {
-  e.preventDefault();
-  start();
-});
-
-$("finishSettings").addEventListener("click", (e) => {
-  e.preventDefault();
-  stopTimers();
-  fillForm();
-  showSection("setup");
-});
-
-load();
-fillForm();
-showSection("setup");
-</script></body></html>
+function loadRewards(){try{rewardState=JSON.parse(localStorage.getItem("pmc-rewards-v1-"+player)||"null")||{completed:0,capsules:0,princesses:[],accessories:[],equipped:[]}}catch(e){rewardState={completed:0,capsules:0,princesses:[],accessories:[],equipped:[]}}if(!Array.isArray(rewardState.princesses))rewardState.princesses=[];if(!Array.isArray(rewardState.accessories))rewardState.accessories=[];if(!Array.isArray(rewardState.equipped))rewardState.equipped=[];rewardState.completed=Number(rewardState.completed)||0;rewardState.capsules=Number(rewardState.capsules)||0;capsulePity=0;renderRewards()}
+function saveRewards(){try{localStorage.setItem("pmc-rewards-v1-"+player,JSON.stringify(rewardState))}catch(e){}renderRewards()}
+function renderRewards(){const progress=rewardState.completed%10;$("questionProgress").textContent=`${progress} / 10`;$("capsuleCount").textContent=rewardState.capsules;$("princessProgress").textContent=`${rewardState.princesses.length} / 50`;const open=$("openCapsule");if(open){open.disabled=rewardState.capsules<1;open.style.opacity=rewardState.capsules<1?".5":"1"}
+ const book=$("princessBook");if(book)book.innerHTML=princessNames.map((n,i)=>{const owned=rewardState.princesses.includes(i);return `<div class="collect-slot ${owned?'owned':''}" title="${owned?n:'Not discovered'}"><span>${owned?princessLooks[i%princessLooks.length]:'👤'}</span><small>${owned?n:'Mystery '+String(i+1).padStart(2,'0')}</small></div>`}).join("");
+ const inv=$("accessoryInventory");if(inv)inv.innerHTML=rewardState.accessories.length?rewardState.accessories.map(id=>{const a=accessoriesPool.find(x=>x.id===id);return a?`<label class="pill-check"><input type="checkbox" data-equip="${a.id}" ${rewardState.equipped.includes(a.id)?'checked':''}> ${a.emoji} ${a.name}</label>`:""}).join(""):'<p class="note">Open a capsule to discover your first accessory!</p>';
+ const my=$("myPrincess");if(my){const p=rewardState.princesses.length?rewardState.princesses[rewardState.princesses.length-1]:null;my.innerHTML=`<div style="font-size:52px">${p===null?'👸':princessLooks[p%princessLooks.length]}</div><div>${p===null?'Your princess is waiting!':princessNames[p]}</div><div style="font-size:26px;margin-top:6px">${rewardState.equipped.map(id=>accessoriesPool.find(a=>a.id===id)?.emoji||'').join(' ')}</div>`}}
+function countCompletedQuestion(){if(questionCountedThisQuestion)return;questionCountedThisQuestion=true;rewardState.completed++;if(rewardState.completed%10===0){rewardState.capsules++;saveRewards();const result=$("capsuleResult");result.classList.remove("hidden");result.innerHTML='🎉 You earned a capsule! Open it when you are ready.'}else saveRewards()}
+function openCapsule(){if(rewardState.capsules<1)return;rewardState.capsules--;let item;const unowned=princessNames.map((_,i)=>i).filter(i=>!rewardState.princesses.includes(i));const wantPrincess=unowned.length>0&&(capsulePity>=2||Math.random()<0.62);if(wantPrincess){const i=unowned[rand(0,unowned.length-1)];rewardState.princesses.push(i);capsulePity=0;item={emoji:princessLooks[i%princessLooks.length],name:princessNames[i]+' the Princess',kind:'New Princess'}}else{const pool=accessoriesPool.filter(a=>!rewardState.accessories.includes(a.id));if(pool.length){const a=pool[rand(0,pool.length-1)];rewardState.accessories.push(a.id);item={emoji:a.emoji,name:a.name,kind:'New Accessory'};capsulePity++}else if(unowned.length){const i=unowned[rand(0,unowned.length-1)];rewardState.princesses.push(i);capsulePity=0;item={emoji:princessLooks[i%princessLooks.length],name:princessNames[i]+' the Princess',kind:'New Princess'}}else{item={emoji:'✨',name:'Bonus capsule sparkle',kind:'Bonus'}}}const result=$("capsuleResult");result.classList.remove("hidden");result.innerHTML=`<div style="font-size:13px;font-weight:900">${item.kind}</div><div class="item-emoji">${item.emoji}</div><h3>${item.name}</h3><p class="note">${item.kind==='Bonus'?'You have collected all princesses and accessories in this set.':'Added to your collection!'}</p>`;saveRewards()}
+const monthKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`};
+const monthName=()=>new Date().toLocaleDateString(undefined,{month:"long",year:"numeric"});
+function blank(){return {monthly:{},allTime:{Leah:{stamps:0,questions:0,correct:0,best:0},Lena:{stamps:0,questions:0,correct:0,best:0}}}}
+function load(){try{data=JSON.parse(localStorage.getItem("pmc-data")||"null")||blank()}catch(e){data=blank()}if(!data.monthly)data.monthly={};if(!data.allTime)data.allTime=blank().allTime;for(const n of kids){if(!data.allTime[n])data.allTime[n]={stamps:0,questions:0,correct:0,best:0};for(const m of Object.keys(data.monthly)){if(data.monthly[m][n]==null)data.monthly[m][n]=0}}if(!data.monthly[monthKey()])data.monthly[monthKey()]={Leah:0,Lena:0};saveData()}
+function saveData(){try{localStorage.setItem("pmc-data",JSON.stringify(data))}catch(e){}}
+function saveSettings(){settingsByPlayer[player]={...settings};try{localStorage.setItem("pmc-settings-by-player",JSON.stringify(settingsByPlayer));localStorage.setItem("pmc-settings",JSON.stringify(settings));localStorage.setItem("pmc-player",player)}catch(e){}}
+function current(){return data.monthly[monthKey()][player]||0}
+function render(){$("monthLabel").textContent=monthName()+" · "+player;$("monthCount").textContent=current()+" / 20";$("stamps").innerHTML=art.map((x,i)=>`<div class="stamp ${i<current()?"earned":""}">${i<current()?x:"?"}</div>`).join("");const a=data.allTime[player];$("allStamps").textContent=a.stamps;$("allQuestions").textContent=a.questions;$("allCorrect").textContent=a.correct;$("bestStreak").textContent=a.best;const keys=Object.keys(data.monthly).sort().reverse();$("history").innerHTML=keys.length?keys.map(k=>`<div class="history-row"><span>${k}</span><span>Leah ${data.monthly[k].Leah||0} · Lena ${data.monthly[k].Lena||0}</span></div>`).join(""):"No records yet"}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function setTopics(){const opts=player==="Leah"?["Auto practice","Number sense & place value","Addition","Subtraction","Multiplication & division","Fractions & patterns","Mixed review"]:["Auto practice","Number sense","Addition","Subtraction","Patterns","Mixed review"];const old=settings.topic;$("topic").innerHTML=opts.map(x=>`<option>${x}</option>`).join("");settings.topic=opts.includes(old)?old:"Auto practice";$("topic").value=settings.topic;$("levelNote").textContent=player==="Leah"?"Leah · Year 3: number facts, place value, addition/subtraction to 1,000, multiplication/division facts and early fractions/patterns.":"Lena · Year 1: counting and number relationships, addition/subtraction within 20, making 10 and simple repeating patterns."}
+function readSettings(){settings={mode:$("mode").value,topic:$("topic").value,difficulty:$("difficulty").value,count:$("count").value};saveSettings()}
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function addQ(a,b,desc=""){return {text:`${a} + ${b} = ?`,answer:a+b,desc}}
+function subQ(a,b,desc=""){if(a<b)[a,b]=[b,a];return {text:`${a} − ${b} = ?`,answer:a-b,desc}}
+function makeQuestion(){let topic=settings.topic;const year3=player==="Leah";if(topic==="Auto practice")topic=year3?["Number sense & place value","Addition","Subtraction","Multiplication & division","Fractions & patterns"][randInt(0,4)]:["Number sense","Addition","Subtraction","Patterns"][randInt(0,3)];if(topic==="Mixed review")topic=year3?["Number sense & place value","Addition","Subtraction","Multiplication & division","Fractions & patterns"][randInt(0,4)]:["Number sense","Addition","Subtraction","Patterns"][randInt(0,3)];
+ if(!year3){if(topic==="Number sense"){const type=randInt(0,2);if(type===0){let a=randInt(0,20);return {text:`What comes after ${a}?`,answer:a+1}}if(type===1){let a=randInt(1,19);return {text:`${a} + __ = 10`,answer:10-a}}let a=randInt(0,15),b=a+randInt(1,5);return {text:`Which is bigger? ${a} or ${b}`,answer:b,desc:"Compare numbers"}}
+ if(topic==="Addition"){let a=randInt(0,10),b=randInt(0,10);if(randInt(0,1))b=Math.min(b,20-a);else a=Math.min(a,20-b);return addQ(a,b,"within 20")}
+ if(topic==="Subtraction"){let a=randInt(0,20),b=randInt(0,a);return subQ(a,b,"within 20")}
+ let pattern=randInt(1,5),start=randInt(0,10);return {text:`${start}, ${start+pattern}, ${start+pattern*2}, __`,answer:start+pattern*3,desc:"Find the pattern"}}
+ if(topic==="Number sense & place value"){let n=randInt(20,999);if(randInt(0,1)===0)return {text:`${Math.floor(n/10)*10} + ${n%10} = ?`,answer:Math.floor(n/10)*10+n%10,desc:"Place value"};let tens=Math.floor(n/10)*10;return {text:`${tens} + __ = ${n}`,answer:n-tens,desc:"Partitioning"}}
+ if(topic==="Addition"){let max=randInt(0,1)?99:999;let a=randInt(10,max-10),b=randInt(10,max-a);return addQ(a,b,"Use place value")}
+ if(topic==="Subtraction"){let max=randInt(0,1)?99:999;let a=randInt(20,max),b=randInt(1,a);return subQ(a,b,"Use place value")}
+ if(topic==="Multiplication & division"){let t=randInt(2,10),n=randInt(2,12);if(randInt(0,1))return {text:`${t} × ${n} = ?`,answer:t*n};return {text:`${t*n} ÷ ${t} = ?`,answer:n}}
+ let kind=randInt(0,2);if(kind===0){let n=randInt(2,10)*2;return {text:`Half of ${n} = ?`,answer:n/2,desc:"Fractions"}}if(kind===1){let start=randInt(1,20),step=randInt(2,9);return {text:`${start}, ${start+step}, ${start+step*2}, __`,answer:start+step*3,desc:"Patterns"}}let a=randInt(10,50),b=randInt(2,9);return {text:`${a} + ${b} = ?`,answer:a+b,desc:"Mixed review"}}
+function makeQuestions(){questions=Array.from({length:+settings.count},makeQuestion)}
+function section(id){["setup","game","finish"].forEach(s=>$(s).classList.toggle("hidden",s!==id));document.body.classList.toggle("in-game",id==="game");if(id!=="game")window.scrollTo(0,0)}
+function start(){clearInterval(timer);clearTimeout(advanceTimer);readSettings();makeQuestions();idx=0;correct=0;streak=0;best=0;completed=0;sessionCorrect=0;sessionSkipped=0;sessionFinished=false;section("game");nextQuestion()}
+function paintTheme(){currentTheme=themes[randInt(0,themes.length-1)];const g=$("game");g.style.setProperty("--scene",currentTheme.bg);g.style.setProperty("--scene2",currentTheme.bg2);g.style.setProperty("--accent",currentTheme.accent);g.style.setProperty("--sceneInk",currentTheme.ink);const ds=currentTheme.doodles;document.querySelectorAll(".doodle").forEach((el,i)=>el.textContent=ds[i]);$("sceneLabel").textContent=`${currentTheme.name} · ${player==="Leah"?"Pop-star princess":"Little princess"} ✨`}
+function nextQuestion(){clearInterval(timer);clearTimeout(advanceTimer);if(idx>=questions.length){finish();return}answered=false;questionCountedThisQuestion=false;paintTheme();const q=questions[idx];$("question").textContent=q.text;$("answer").textContent="";$("counter").textContent=`${idx+1} / ${questions.length}`;$("progress").style.width=`${idx/questions.length*100}%`;remaining=SECONDS[settings.difficulty]||20;$("timer").textContent=remaining+" seconds";$("timerbar").style.width="100%";$("skip").classList.remove("hidden");$("testEntry").classList.toggle("hidden",settings.mode!=="test");$("userAnswer").value="";if(settings.mode==="test"){$("answer").textContent="";$("skip").textContent="Skip →"}timer=setInterval(()=>{remaining--;$("timer").textContent=remaining>0?remaining+" seconds":"Time's up!";$("timerbar").style.width=Math.max(0,remaining/(SECONDS[settings.difficulty]||20)*100)+"%";if(remaining<=0)reveal()},1000)}
+function reveal(){if(answered)return;answered=true;clearInterval(timer);completed++;countCompletedQuestion();$("answer").textContent="Answer: "+questions[idx].answer;$("timer").textContent="✨ Next question in 2.5 seconds";$("skip").classList.add("hidden");$("testEntry").classList.add("hidden");advanceTimer=setTimeout(()=>{idx++;nextQuestion()},2500)}
+function submitAnswer(){if(answered||settings.mode!=="test")return;const raw=$("userAnswer").value;if(raw===""){$("userAnswer").focus();return}const isCorrect=Number(raw)===Number(questions[idx].answer);if(isCorrect){correct++;sessionCorrect++;streak++;best=Math.max(best,streak);$("answer").textContent="Correct! ✨"}else{streak=0;$("answer").textContent="Not quite — answer: "+questions[idx].answer}answered=true;clearInterval(timer);completed++;countCompletedQuestion();$("timer").textContent="✨ Next question in 2.5 seconds";$("skip").classList.add("hidden");$("testEntry").classList.add("hidden");advanceTimer=setTimeout(()=>{idx++;nextQuestion()},2500)}
+function skipQuestion(){if(answered)return;clearInterval(timer);clearTimeout(advanceTimer);sessionSkipped++;streak=0;idx++;nextQuestion()}
+function finish(){if(sessionFinished)return;sessionFinished=true;clearInterval(timer);clearTimeout(advanceTimer);const a=data.allTime[player];a.questions+=completed;a.correct+=correct;a.best=Math.max(a.best,best);if(current()<20){data.monthly[monthKey()][player]=current()+1;a.stamps++}saveData();render();$("finishTitle").textContent=`Wonderful work, ${player}!`;$ ("finishText").textContent=`Completed ${completed} of ${questions.length} questions. Test answers correct: ${correct}. Skipped: ${sessionSkipped}. This month: ${current()}/20 stickers.`;section("finish")}
+function selectPlayer(n){player=n;document.querySelectorAll("[data-player]").forEach(b=>b.classList.toggle("selected",b.dataset.player===player));if(!settingsByPlayer[player])settingsByPlayer[player]={...defaultsByPlayer[player]};settings={...defaultsByPlayer[player],...settingsByPlayer[player]};setTopics();$("mode").value=settings.mode;$("difficulty").value=settings.difficulty;$("count").value=settings.count;$("topic").value=settings.topic;saveSettings();loadRewards();render();$("adminChildName").textContent=player}
+document.querySelectorAll("[data-player]").forEach(b=>b.addEventListener("click",()=>selectPlayer(b.dataset.player)));
+$("start").addEventListener("click",start);$("skip").addEventListener("click",skipQuestion);$("submitAnswer").addEventListener("click",submitAnswer);$("userAnswer").addEventListener("keydown",e=>{if(e.key==="Enter")submitAnswer()});$("back").addEventListener("click",()=>{clearInterval(timer);clearTimeout(advanceTimer);section("setup")});$("playAgain").addEventListener("click",start);$("finishSettings").addEventListener("click",()=>{section("setup");$("adminPanel").classList.add("hidden")});
+for(const id of ["mode","topic","difficulty","count"])$(id).addEventListener("change",readSettings);
+$("adminLogin").addEventListener("click",()=>{const pin=prompt("Admin PIN");if(pin===null)return;if(pin!==ADMIN_PIN){alert("Incorrect PIN.");return}$("adminPanel").classList.remove("hidden");$("adminChildName").textContent=player;$("adminPanel").scrollIntoView({behavior:"smooth",block:"center"})});$("adminClose").addEventListener("click",()=>$ ("adminPanel").classList.add("hidden"));
+$("openCapsule").addEventListener("click",openCapsule);document.addEventListener("change",e=>{if(e.target.matches("[data-equip]")){const id=e.target.dataset.equip;if(e.target.checked&&!rewardState.equipped.includes(id))rewardState.equipped.push(id);if(!e.target.checked)rewardState.equipped=rewardState.equipped.filter(x=>x!==id);saveRewards()}});
+$("resetChild").addEventListener("click",()=>{if(!confirm(`Reset all monthly and all-time records for ${player}? This cannot be undone.`))return;for(const m of Object.keys(data.monthly)){if(data.monthly[m])data.monthly[m][player]=0}data.allTime[player]={stamps:0,questions:0,correct:0,best:0};saveData();render();alert(`${player}'s records have been reset.`)});$("resetAll").addEventListener("click",()=>{if(!confirm("Reset ALL monthly and all-time records for both children? This cannot be undone."))return;data=blank();data.monthly[monthKey()]={Leah:0,Lena:0};saveData();render();alert("All records have been reset.")});
+load();const savedPlayer=localStorage.getItem("pmc-player");if(savedPlayer&&kids.includes(savedPlayer))player=savedPlayer;try{settingsByPlayer=JSON.parse(localStorage.getItem("pmc-settings-by-player")||"{}")||{}}catch(e){settingsByPlayer={}}if(!settingsByPlayer[player]){let legacy={};try{legacy=JSON.parse(localStorage.getItem("pmc-settings")||"{}")||{}}catch(e){}const oldDifficulty={Easy:"Easy",Normal:"Medium",Challenge:"Very hard"};settingsByPlayer[player]={...defaultsByPlayer[player],difficulty:oldDifficulty[legacy.difficulty]||defaultsByPlayer[player].difficulty,count:legacy.count||defaultsByPlayer[player].count};}for(const n of kids)if(!settingsByPlayer[n])settingsByPlayer[n]={...defaultsByPlayer[n]};settings={...defaultsByPlayer[player],...settingsByPlayer[player]};setTopics();$("mode").value=settings.mode;$("difficulty").value=settings.difficulty;$("count").value=settings.count;$("topic").value=settings.topic;document.querySelectorAll("[data-player]").forEach(b=>b.classList.toggle("selected",b.dataset.player===player));saveSettings();loadRewards();render();
+</script>
+</body></html>
