@@ -12,7 +12,7 @@
  --site-font-heading:ui-rounded,"Trebuchet MS",system-ui,sans-serif;
  --site-heading-scale:1;--site-spacing-scale:1;--site-radius-scale:1;--site-decoration-opacity:1;
 }
-*{box-sizing:border-box} body{margin:0;font-family:var(--site-font-body);background:var(--site-background);color:var(--site-on-background)}
+*{box-sizing:border-box} html{margin:0} body{margin:0;font-family:var(--site-font-body);background:var(--site-background);color:var(--site-on-background)}
 #app{min-height:100vh;background-color:var(--site-background);color:var(--site-on-background);overflow:hidden}
 header{background:var(--site-primary);color:var(--site-on-primary);padding:calc(16px * var(--site-spacing-scale)) clamp(16px,4vw,42px);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{font-size:calc(clamp(22px,3vw,34px)*var(--site-heading-scale));font-weight:950;letter-spacing:-.04em}.brand small{display:block;font-size:12px;letter-spacing:.13em;text-transform:uppercase;opacity:.85;margin-top:3px}
@@ -44,7 +44,31 @@ button{font:inherit;cursor:pointer;border:0}.primary{background:var(--site-prima
 @keyframes pop{50%{transform:scale(1.18)}}
 footer{text-align:center;font-size:12px;opacity:.65;padding:12px}
 @media(max-width:650px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collection-book{grid-template-columns:repeat(5,minmax(0,1fr))}.reward-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stickers{grid-template-columns:repeat(5,minmax(0,1fr))}.shell{padding:12px}.panel{padding:16px}}
-@media(orientation:landscape) and (max-height:520px){header{padding:8px 22px}.brand{font-size:22px}.brand small{display:none}.shell{padding:10px 22px}.panel{padding:12px;margin-bottom:10px}#game{min-height:calc(100vh - 92px);gap:4px}.questionzone{min-height:120px}.bigquestion{font-size:clamp(52px,13vh,90px);margin:4px}.timer{font-size:22px}.answer{font-size:34px}.gamebar{font-size:13px}.stickers{grid-template-columns:repeat(10,minmax(0,1fr))}}
+/* Landscape gameplay: fit the real v2 DOM to one viewport, with a wide centered question and no scrolling. */
+@media (orientation: landscape) and (max-height: 650px) {
+  html, body { height: 100%; min-height: 0; }
+  body.in-game { height: 100dvh; overflow: hidden; overscroll-behavior: none; }
+  body.in-game #app { height: 100dvh; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  body.in-game header, body.in-game footer { display: none; }
+  body.in-game main.shell { flex: 1 1 auto; width: 100%; max-width: none; height: 100%; min-height: 0; overflow: hidden; padding: 0; margin: 0; }
+  body.in-game #playing { height: 100%; min-height: 0; }
+  body.in-game #playing > #game { height: 100%; min-height: 0; width: 100%; margin: 0; border: 0; border-radius: 0; padding: max(8px, env(safe-area-inset-top)) clamp(18px, 4vw, 64px) max(8px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; overflow: hidden; }
+  body.in-game #game > .gamebar { flex: 0 0 auto; flex-wrap: nowrap; font-size: clamp(11px, 2.1vh, 14px); gap: clamp(6px, 1.5vw, 16px); }
+  body.in-game #game > .gamebar button { flex: 0 0 auto; padding: 7px 12px; font-size: clamp(11px, 2vh, 14px); white-space: nowrap; }
+  body.in-game #game > .gamebar .progress { max-width: 280px; }
+  body.in-game #game .questionzone { flex: 1 1 auto; min-height: 0; width: 100%; padding: 0; justify-content: center; gap: clamp(2px, .8vh, 7px); overflow: hidden; }
+  body.in-game #game .questionzone > div:first-child { font-size: clamp(14px, 3vh, 22px) !important; }
+  body.in-game #game .bigquestion { font-size: clamp(38px, 10vh, 76px); line-height: 1.02; margin: clamp(2px, .8vh, 8px) 0; }
+  body.in-game #game .timer { font-size: clamp(15px, 3.3vh, 22px); line-height: 1.1; }
+  body.in-game #game .track { height: 8px; flex: 0 0 auto; }
+  body.in-game #game .answer { font-size: clamp(20px, 4.5vh, 34px); min-height: 0; line-height: 1.1; }
+  body.in-game #game .gamebar:last-child > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+@media (orientation: landscape) and (max-height: 420px) {
+  body.in-game #playing > #game { padding-left: 22px; padding-right: 22px; gap: 3px; }
+  body.in-game #game .bigquestion { font-size: clamp(32px, 9vh, 56px); }
+  body.in-game #game .questionzone > div:first-child { display: none; }
+}
 
 .section-note{font-size:13px;line-height:1.5;opacity:.78;margin:-6px 0 14px}.area-group{border:1px solid #ead6ef;border-radius:16px;padding:13px;margin:12px 0}.area-group h3{font-size:15px;margin-bottom:10px}.pill-check{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:999px;background:#fff5fc;border:1px solid #ead6ef;font-size:13px}.pill-check input{accent-color:var(--site-primary)}.reward-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.reward-stat{background:#fff4fb;border:1px solid #efd6ed;border-radius:14px;padding:12px;text-align:center}.reward-stat strong{display:block;font-size:22px;color:#8e5bc7}.collection-book{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.collect-slot{min-height:68px;border-radius:13px;border:1px solid #ead6ef;background:#fff7fc;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px}.collect-slot small{font-size:10px;color:#765b7b}.collect-slot.owned{background:linear-gradient(135deg,#fff0b8,#ffe1f1);border-color:#e9b7d9}.capsule-result{padding:16px;border-radius:18px;background:linear-gradient(135deg,#fce5ff,#fff2cc);text-align:center;margin-top:12px}.capsule-result .item-emoji{font-size:52px}.monthly-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.month-card{padding:9px;border-radius:12px;background:rgba(255,255,255,.7);text-align:center;font-size:12px}@media(max-width:600px){.monthly-grid{grid-template-columns:repeat(3,1fr)}}
 </style></head>
@@ -350,7 +374,9 @@ function showSection(id) {
     const el = $(x);
     if (el) el.classList.toggle("hidden", x !== id);
   });
-  window.scrollTo({top: 0, behavior: "smooth"});
+  // Activate the dedicated, no-scroll landscape gameplay layout only while playing.
+  document.body.classList.toggle("in-game", id === "playing");
+  if (id !== "playing") window.scrollTo({top: 0, behavior: "auto"});
 }
 
 function stopTimers() {
