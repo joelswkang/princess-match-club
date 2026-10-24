@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8e5bc7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Princess Math">
+<link rel="manifest" href="manifest.json">
+<title>Princess Math Club</title>
+<style>
+:root{--purple:#8e5bc7;--pink:#f7c6df;--ink:#35213e;--bg:#fff7fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Trebuchet MS",sans-serif}
+header{background:var(--purple);color:white;padding:18px 16px;display:flex;justify-content:space-between;align-items:center}
+header h1{font-size:23px;margin:0}header small{display:block;font-size:12px;opacity:.85;margin-top:4px}
+main{max-width:720px;margin:auto;padding:12px}.card{background:white;border:1px solid #f0d9ec;border-radius:20px;padding:17px;margin:12px 0;box-shadow:0 5px 18px #9d66a51a}
+h2{font-size:19px;margin:0 0 13px}.players,.row{display:flex;gap:10px}.player{flex:1;background:#fff9fd;border:2px solid #f0d9ec;border-radius:16px;padding:12px;font:inherit;color:inherit}.player.selected{border-color:var(--purple);background:#f4e8ff}.emoji{display:block;font-size:28px}.player b{display:block;margin-top:4px}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}select{width:100%;padding:12px;border:1px solid #e5cfe4;border-radius:12px;background:white;font:inherit;font-size:16px;color:inherit}
+button{font:inherit;cursor:pointer}.primary{border:0;background:var(--purple);color:white;font-weight:800;padding:14px 18px;border-radius:999px;width:100%;margin-top:14px;font-size:16px}.secondary{border:0;background:var(--pink);color:#54244b;font-weight:800;padding:11px 14px;border-radius:999px}
+.stamps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.stamp{aspect-ratio:1;border-radius:12px;background:#fff2fb;border:1px dashed #d9b9dc;display:grid;place-items:center;font-size:25px}.stamp.earned{background:#fff1a8;border:2px solid #edb9d7}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{background:#fff8fd;border-radius:13px;padding:12px}.stat b{display:block;font-size:22px;color:var(--purple)}
+#game{text-align:center}.question{font-size:clamp(42px,10vw,64px);font-weight:900;margin:28px 0}.timer{font-size:23px;font-weight:800;color:#a34b86}.answer{font-size:28px;font-weight:900;color:#22855d;min-height:35px}.progress{height:9px;background:#f1e3f0;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;background:var(--purple);width:0}
+.hidden{display:none!important}.history-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1e3f0}.note{font-size:12px;opacity:.7;line-height:1.5}
+@media(min-width:600px){main{padding:20px}}
+</style>
+</head>
+<body>
+<header><div><h1>Princess Math Club</h1><small>Little steps, magical minds ✨</small></div><div style="font-size:32px">👑✨</div></header>
+<main>
+<section id="setup">
+ <div class="card"><h2>👸 Choose Your Princess</h2><div class="players">
+  <button class="player selected" data-player="Leah"><span class="emoji">👑🌸</span><b>Leah</b></button>
+  <button class="player" data-player="Lena"><span class="emoji">🦄💖</span><b>Lena</b></button>
+ </div></div>
+ <div class="card"><h2>🪄 Math Settings</h2>
+  <label for="operation">Math topic</label><select id="operation"><option>Addition</option><option>Subtraction</option><option>Multiplication</option><option>Division</option><option>Mixed</option></select>
+  <label for="digits">Number size</label><select id="digits"><option value="single">Single digit</option><option value="double">Double digit</option><option value="triple">Triple digit</option><option value="mixed" selected>Mixed digits</option></select>
+  <label for="addends">Numbers in addition</label><select id="addends"><option value="2">2 numbers</option><option value="3">3 numbers</option><option value="4">4 numbers</option></select>
+  <label for="seconds">Countdown</label><select id="seconds"><option>5</option><option selected>10</option><option>20</option><option>30</option><option>60</option></select>
+  <label for="count">Questions per challenge</label><select id="count"><option>5</option><option>10</option><option selected>20</option><option>30</option><option>50</option></select>
+  <button class="primary" id="start">Start Royal Challenge ✨</button>
+ </div>
+ <div class="card"><h2>🎀 This Month's Stickers</h2><div class="row" style="justify-content:space-between;align-items:center"><b id="monthLabel">Month</b><b id="monthCount">0 / 20</b></div><p class="note">Each completed challenge earns one sticker, up to 20 per child each month.</p><div id="stamps" class="stamps"></div></div>
+ <div class="card"><h2>🏆 Progress & Records</h2><div class="stats">
+  <div class="stat">All-time stickers<b id="allStamps">0</b></div><div class="stat">Questions completed<b id="allQuestions">0</b></div><div class="stat">Correct answers<b id="allCorrect">0</b></div><div class="stat">Best streak<b id="bestStreak">0</b></div>
+ </div><h3 style="margin-top:18px">📚 Monthly history</h3><div id="history"></div></div>
+</section>
+<section id="game" class="hidden">
+ <div class="card">
+  <div class="row" style="align-items:center"><button id="back" class="secondary">← Settings</button><div id="counter" style="margin-left:auto;font-weight:800">1 / 20</div></div>
+  <div class="progress" style="margin-top:16px"><span id="progress"></span></div>
+  <div style="margin-top:20px">✨ Solve the magic math! ✨</div>
+  <div id="question" class="question">7 + 5 = ?</div><div id="timer" class="timer">10 seconds</div>
+  <div class="progress" style="margin:15px auto;max-width:320px"><span id="timerbar" style="width:100%"></span></div>
+  <div id="answer" class="answer"></div>
+  <div class="row"><button id="showAnswer" class="secondary" style="flex:1">Show Answer</button><button id="next" class="primary" style="flex:1">Next ✨</button></div>
+ </div>
+</section>
+<section id="finish" class="hidden"><div class="card" style="text-align:center"><div style="font-size:60px">🏰👑🎉</div><h2 id="finishTitle">Wonderful work!</h2><p id="finishText"></p><button id="playAgain" class="primary">Play Again</button><button id="finishSettings" class="secondary" style="margin-top:10px">Settings</button></div></section>
+<p class="note" style="text-align:center">Your progress is saved on this device. For important records, keep a backup of this device.</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const art=["🌸","👑","🦄","💎","🦋","🌈","🩷","🐱","🪄","⭐","🧁","🦢","🎀","🌷","🐬","🍓","✨","🏰","💖","🌟"];
+const defaults={operation:"Addition",digits:"mixed",addends:"2",seconds:"10",count:"20"};
+let settings={...defaults},player="Leah",data={},questions=[],idx=0,remaining=10,timer=null,answered=false,correct=0,streak=0,best=0,sessionCorrect=0;
+const monthKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`};
+const monthName=()=>new Date().toLocaleDateString(undefined,{month:"long",year:"numeric"});
+function blank(){return {monthly:{},allTime:{Leah:{stamps:0,questions:0,correct:0,best:0},Lena:{stamps:0,questions:0,correct:0,best:0}}}}
+function load(){try{data=JSON.parse(localStorage.getItem("pmc-data")||"null")||blank()}catch(e){data=blank()}if(!data.monthly)data.monthly={};if(!data.allTime)data.allTime=blank().allTime;if(!data.monthly[monthKey()])data.monthly[monthKey()]={Leah:0,Lena:0};for(const n of ["Leah","Lena"])if(data.monthly[monthKey()][n]==null)data.monthly[monthKey()][n]=0;save()}
+function save(){try{localStorage.setItem("pmc-data",JSON.stringify(data));localStorage.setItem("pmc-player",player);localStorage.setItem("pmc-settings",JSON.stringify(settings))}catch(e){}}
+function current(){return data.monthly[monthKey()][player]||0}
+function render(){ $("monthLabel").textContent=monthName()+" · "+player;$("monthCount").textContent=current()+" / 20";$("stamps").innerHTML=art.map((x,i)=>`<div class="stamp ${i<current()?"earned":""}">${i<current()?x:"?"}</div>`).join("");const a=data.allTime[player];$("allStamps").textContent=a.stamps;$("allQuestions").textContent=a.questions;$("allCorrect").textContent=a.correct;$("bestStreak").textContent=a.best;const keys=Object.keys(data.monthly).sort().reverse();$("history").innerHTML=keys.length?keys.map(k=>`<div class="history-row"><span>${k}</span><span>Leah ${data.monthly[k].Leah||0} · Lena ${data.monthly[k].Lena||0}</span></div>`).join(""):"No records yet"}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function number(mode){if(mode==="mixed")mode=["single","double","triple"][rand(0,2)];return mode==="single"?rand(1,9):mode==="double"?rand(10,99):rand(100,999)}
+function makeQ(){let op=settings.operation;if(op==="Mixed")op=["Addition","Subtraction","Multiplication","Division"][rand(0,3)];if(op==="Addition"){let p=Array.from({length:+settings.addends},()=>number(settings.digits));return {text:p.join(" + ")+" = ?",answer:p.reduce((a,b)=>a+b,0)}}if(op==="Subtraction"){let a=number(settings.digits),b=number(settings.digits);if(a<b)[a,b]=[b,a];return{text:`${a} − ${b} = ?`,answer:a-b}}if(op==="Multiplication"){let a=rand(1,12),b=rand(1,12);return{text:`${a} × ${b} = ?`,answer:a*b}}let b=rand(1,12),a=rand(1,12);return{text:`${a*b} ÷ ${b} = ?`,answer:a}}
+function section(id){["setup","game","finish"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0)}
+function start(){clearInterval(timer);settings={operation:$("operation").value,digits:$("digits").value,addends:$("addends").value,seconds:$("seconds").value,count:$("count").value};save();questions=Array.from({length:+settings.count},makeQ);idx=0;correct=0;streak=0;sessionCorrect=0;section("game");nextQuestion()}
+function nextQuestion(){clearInterval(timer);if(idx>=questions.length){finish();return}answered=false;const q=questions[idx];$("question").textContent=q.text;$("answer").textContent="";$("counter").textContent=`${idx+1} / ${questions.length}`;$("progress").style.width=`${idx/questions.length*100}%`;remaining=+settings.seconds;$("timer").textContent=remaining+" seconds";$("timerbar").style.width="100%";timer=setInterval(()=>{remaining--;$("timer").textContent=remaining>0?remaining+" seconds":"Time's up!";$("timerbar").style.width=Math.max(0,remaining/(+settings.seconds)*100)+"%";if(remaining<=0)reveal()},1000)}
+function reveal(){if(answered)return;answered=true;clearInterval(timer);$("answer").textContent="Answer: "+questions[idx].answer;$("timer").textContent="✨ Well done for trying!";$("next").textContent=idx===questions.length-1?"Finish 🎉":"Next ✨"}
+function next(){if(!answered){sessionCorrect++;streak++;correct++;best=Math.max(best,streak)}else streak=0;idx++;nextQuestion()}
+function finish(){clearInterval(timer);const a=data.allTime[player];a.questions+=questions.length;a.correct+=correct;a.best=Math.max(a.best,best);if(current()<20){data.monthly[monthKey()][player]=current()+1;a.stamps++}save();render();$("finishTitle").textContent=`Wonderful work, ${player}!`;$("finishText").textContent=`Completed ${questions.length} questions. Correct answers: ${correct}. ${current()<=20?"You earned a sticker!":""} This month: ${current()}/20.`;section("finish")}
+document.querySelectorAll("[data-player]").forEach(b=>b.addEventListener("click",()=>{player=b.dataset.player;document.querySelectorAll("[data-player]").forEach(x=>x.classList.toggle("selected",x===b));save();render()}));
+$("start").addEventListener("click",start);$("showAnswer").addEventListener("click",reveal);$("next").addEventListener("click",next);$("back").addEventListener("click",()=>{clearInterval(timer);section("setup")});$("playAgain").addEventListener("click",start);$("finishSettings").addEventListener("click",()=>section("setup"));
+load();const savedSettings=localStorage.getItem("pmc-settings");if(savedSettings){try{settings={...defaults,...JSON.parse(savedSettings)}}catch(e){}}for(const k of Object.keys(defaults))if($(k))$(k).value=settings[k];const savedPlayer=localStorage.getItem("pmc-player");if(savedPlayer)player=savedPlayer;document.querySelectorAll("[data-player]").forEach(b=>b.classList.toggle("selected",b.dataset.player===player));render();
+</script>
+</body></html>

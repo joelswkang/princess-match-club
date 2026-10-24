@@ -1,0 +1,9 @@
+{
+  "name": "Princess Math Club",
+  "short_name": "Princess Math",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fff7fc",
+  "theme_color": "#8e5bc7",
+  "description": "A princess-themed maths challenge and monthly sticker collection."
+}
